@@ -3,17 +3,17 @@ import './app-filter.css';
 export const AppFilter = () => {
   return (
     <div className="btn-group">
-      <buttont className="btn btn-light" type="button">
+      <button className="btn btn-light" type="button">
         Всі бедолаги
-      </buttont>
+      </button>
 
-      <buttont className="btn btn-outline-light" type="button">
+      <button className="btn btn-outline-light" type="button">
         На підвищення
-      </buttont>
+      </button>
 
-      <buttont className="btn btn-outline-light" type="button">
+      <button className="btn btn-outline-light" type="button">
         З/П більше 1к$
-      </buttont>
+      </button>
     </div>
   )
 }
