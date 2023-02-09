@@ -16,7 +16,7 @@ const EmployeesListItem = (props) => {
   return (
     <li className={classNames}>
         <span onClick={onToggleProp} className="list-group-item-label" data-toggle="like">{name}</span>
-        <input type="text" className="list-group-item-input" defaultValue={salary}/>
+        <input type="text" className="list-group-item-input" defaultValue={salary + '$'}/>
         <div className='d-flex justify-content-center align-items-center'>
             <button onClick={onToggleProp} data-toggle="increase" type="button"
                 className="btn-cookie btn-sm ">
