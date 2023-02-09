@@ -17,9 +17,9 @@ class App extends Component {
     super(props)
     this.state = {
       data: [
-        {name: 'Kirillo Budanov', salary: "2800$", increase: false, id: 1}, 
-        {name: 'Vitalii Hrytsenko', salary: "600$", increase: true, id: 2},
-        {name: 'Prodan Anastasiya', salary: "1300$", increase: false, id: 3},
+        {name: 'Kirillo Budanov', salary: "2800$", increase: false, like: true, id: 1}, 
+        {name: 'Vitalii Hrytsenko', salary: "600$", increase: true, like: false, id: 2},
+        {name: 'Prodan Anastasiya', salary: "1300$", increase: false, like: false, id: 3},
       ]
     }
     this.maxId = 4
@@ -35,21 +35,13 @@ class App extends Component {
   }
 
   addItem = (name, salary) => {
-    // const newItem = {name, salary, increase: false, id: this.maxId++} // 
     const newItem = {
         name, 
         salary,
         increase: false,
+        like: false,
         id: this.maxId++
     }
-
-    // this.setState(({data}) => {
-    //   const newArr = [...data, ...newItem];
-    //   return {
-    //     data: newArr
-    //   }
-    // });
-
     this.setState(({data}) => {
       const newArr = [...data, newItem];
       return {
@@ -58,31 +50,34 @@ class App extends Component {
     });
   }
 
-//   addItem = (name, salary) => {
-//     const newItem = {
-//         name, 
-//         salary,
-//         increase: false,
-//         id: this.maxId++
-//     }
-//     this.setState(({data}) => {
-//         const newArr = [...data, newItem];
-//         return {
-//             data: newArr
-//         }
-//     });
-// }
+  onToggleProp = (id, prop) => { 
+    this.setState(({data}) => ({
+      data: data.map(item => {  // перебираю всі обєкти в масиві данних і якщо id співпали, то
+        if(item.id === id) { // оцей обєкт я зманіюю новим, якиий в собі содержить цей же самиий старий, але increase замінений на обратне
+          return {...item, [prop]: !item[prop]} // ...item це той обєкт, ми його розвертаємо і записуємо в новий, а другим ми в айтемі заміняємо increase на протилежний. Воно перезаписує
+        }
+        return item; // якщо це не тей який нам треба масив, то його назад повертаємо (залишаємо як є)
+      })
+    }))
+  }
+
 
   render() {
-   
+
+    let employees = this.state.data.length;
+    let increased = this.state.data.filter(item => item.increase).length;
+
     return (
       <div className="app">
-          <AppInfo />
+          <AppInfo employees={employees} increased={increased} />
           <div className="search-panel">
             <SearchPanel />
             <AppFilter />
           </div>
-          <EmployeesList onDelete={this.deleteItem} data={this.state.data} />
+          <EmployeesList 
+            onToggleProp={this.onToggleProp} 
+            onDelete={this.deleteItem} 
+            data={this.state.data} />
           <EmployeesAddForm onAdd={this.addItem} />
       </div>
     )
