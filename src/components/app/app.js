@@ -20,6 +20,7 @@ class App extends Component {
         {name: 'Prodan Anastasiya', salary: "1300", increase: false, like: false, id: 3},
       ],
       term: '',
+      filter: 'all',
     }
     this.maxId = 4
   }
@@ -73,19 +74,35 @@ class App extends Component {
     this.setState({term});
   }
 
+  filterPost = (items, filter) => {
+    switch(filter) {
+      case 'like': 
+        return items.filter(item => item.like);
+        break;
+      case 'more': 
+        return items.filter(item => item.salary >= 1000);
+        break;
+      default: 
+        return items
+    }
+  }
+
+  onFilterSelect = (filter) => {
+    this.setState({filter});
+  }
 
   render() {
-    const {term, data} = this.state;
+    const {term, data, filter} = this.state;
     let employees = this.state.data.length;
     let increased = this.state.data.filter(item => item.increase).length;
-    let visibbleData = this.searchEmp(data, term); // на сторінку передаються лише ті, що пройшли фукнц. А якщо нічого нема то воно повертає тей же масив
+    let visibbleData =  this.filterPost(this.searchEmp(data, term), filter); // на сторінку передаються лише ті, що пройшли фукнц. А якщо нічого нема то воно повертає тей же масив
 
     return (
       <div className="app">
           <AppInfo employees={employees} increased={increased} />
           <div className="search-panel">
             <SearchPanel onUpdateSearch={this.onUpdateSearch} />
-            <AppFilter />
+            <AppFilter filter={filter} onFilterSelect={this.onFilterSelect} />
           </div>
           <EmployeesList 
             onToggleProp={this.onToggleProp} 
