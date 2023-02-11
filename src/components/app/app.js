@@ -7,8 +7,6 @@ import {SearchPanel} from '../search-panel/search-panel';
 import { AppFilter } from '../app-filter/app-filter';
 import { EmployeesList } from '../employees-list/employees-list';
 import { EmployeesAddForm } from '../employees-add-form/employees-add-form';
-import { render } from '@testing-library/react';
-
 
 
 class App extends Component {
@@ -17,10 +15,11 @@ class App extends Component {
     super(props)
     this.state = {
       data: [
-        {name: 'Kirillo Budanov', salary: "2800$", increase: false, like: true, id: 1}, 
-        {name: 'Vitalii Hrytsenko', salary: "600$", increase: true, like: false, id: 2},
-        {name: 'Prodan Anastasiya', salary: "1300$", increase: false, like: false, id: 3},
-      ]
+        {name: 'Kirillo Budanov', salary: "2800", increase: false, like: true, id: 1}, 
+        {name: 'Vitalii Hrytsenko', salary: "600", increase: true, like: false, id: 2},
+        {name: 'Prodan Anastasiya', salary: "1300", increase: false, like: false, id: 3},
+      ],
+      term: '',
     }
     this.maxId = 4
   }
@@ -61,23 +60,37 @@ class App extends Component {
     }))
   }
 
+  searchEmp = (items, term) => {
+    if (term.length === 0) {
+      return items
+    }
+    return items.filter(item => {
+      return item.name.indexOf(term) > -1; // пробігаємось по імменам і шукаємо в строкі такі букви (підряд). воно возвращає індекс. а якщо не знайшло то -1, тому і переввірка на -1
+    })
+  }
+
+  onUpdateSearch = (term) => {
+    this.setState({term});
+  }
+
 
   render() {
-
+    const {term, data} = this.state;
     let employees = this.state.data.length;
     let increased = this.state.data.filter(item => item.increase).length;
+    let visibbleData = this.searchEmp(data, term); // на сторінку передаються лише ті, що пройшли фукнц. А якщо нічого нема то воно повертає тей же масив
 
     return (
       <div className="app">
           <AppInfo employees={employees} increased={increased} />
           <div className="search-panel">
-            <SearchPanel />
+            <SearchPanel onUpdateSearch={this.onUpdateSearch} />
             <AppFilter />
           </div>
           <EmployeesList 
             onToggleProp={this.onToggleProp} 
             onDelete={this.deleteItem} 
-            data={this.state.data} />
+            data={visibbleData} />
           <EmployeesAddForm onAdd={this.addItem} />
       </div>
     )
